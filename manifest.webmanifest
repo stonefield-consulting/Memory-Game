@@ -1,10 +1,11 @@
 {
-  "name": "Seek-A-Boo \u2014 Stanfield Edition",
+  "name": "Seek-A-Boo — Stanfield Edition",
   "short_name": "Seek-A-Boo",
-  "start_url": "./index.html",
+  "start_url": ".",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#f4f4f8",
+  "theme_color": "#1e90ff",
   "icons": [
     {
       "src": "icons/icon-192.png",
