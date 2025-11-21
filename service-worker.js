@@ -9,6 +9,7 @@ const CORE_ASSETS = [
   "./index.html",
   "./style.css",
   "./game.js",
+  "./manifest.webmanifest",
 
   // Card images (use the same relative paths as in game.js: `images/...`)
   "images/banana.png",
@@ -57,9 +58,9 @@ const CORE_ASSETS = [
 // INSTALL: pre-cache all core assets
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(CORE_ASSETS);
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(CORE_ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -79,7 +80,7 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// FETCH: cache-first strategy for all GET requests
+// FETCH: cache-first strategy with network fallback
 self.addEventListener("fetch", (event) => {
   const { request } = event;
 
@@ -115,8 +116,7 @@ self.addEventListener("fetch", (event) => {
           return networkResponse;
         })
         .catch(() => {
-          // Optional: you could return a fallback image or page here
-          // when completely offline and the resource is not in cache.
+          // When completely offline and not in cache, fall back to main page
           return caches.match("./index.html");
         });
     })
