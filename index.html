@@ -3,6 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <title>Seek-a-Boo - Stanfield Edition</title>
+
+  <!-- Viewport for iPad / mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <!-- iOS PWA support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Memory Game">
+  <!-- Make sure this file exists: icons/icon-192.png -->
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <!-- Theme color for browser / status bar -->
+  <meta name="theme-color" content="#1e90ff">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,9 +39,10 @@
             <option value="4">4</option>
           </select>
           <button id="startGameBtn">Start Game</button>
+          <button id="restartGameBtn" class="hidden">Restart</button>
         </div>
-        <button id="restartGameBtn" class="hidden">Restart Game</button>
       </div>
+
       <div class="status">
         <div id="currentPlayerDisplay"></div>
         <div id="seekCardDisplay" class="seek-display"></div>
@@ -32,10 +50,10 @@
     </header>
 
     <section class="player-name-inputs">
-      <input id="playerName1" placeholder="Player 1 name">
-      <input id="playerName2" placeholder="Player 2 name">
-      <input id="playerName3" placeholder="Player 3 name">
-      <input id="playerName4" placeholder="Player 4 name">
+      <input id="playerName1" type="text" placeholder="Player 1 name">
+      <input id="playerName2" type="text" placeholder="Player 2 name">
+      <input id="playerName3" type="text" placeholder="Player 3 name" class="hidden">
+      <input id="playerName4" type="text" placeholder="Player 4 name" class="hidden">
     </section>
 
     <section class="scoreboard" id="scoreboard"></section>
@@ -50,5 +68,16 @@
   </div>
 
   <script src="game.js"></script>
+  <script>
+    // Register service worker for offline support
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("service-worker.js").catch(function (err) {
+          // Fail silently in production; log if debugging
+          console.log("Service worker registration failed:", err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
