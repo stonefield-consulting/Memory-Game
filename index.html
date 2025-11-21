@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Seek-a-Boo - Stanfield Edition</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <div class="banner">
+      <h1>Seek-A-Boo - Stanfield Edition</h1>
+    </div>
+
+    <header class="top-bar">
+      <div class="controls">
+        <div id="setupControls">
+          <label for="playerCount">Players:</label>
+          <select id="playerCount">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+          <button id="startGameBtn">Start Game</button>
+        </div>
+        <button id="restartGameBtn" class="hidden">Restart Game</button>
+      </div>
+      <div class="status">
+        <div id="currentPlayerDisplay"></div>
+        <div id="seekCardDisplay" class="seek-display"></div>
+      </div>
+    </header>
+
+    <section class="player-name-inputs">
+      <input id="playerName1" placeholder="Player 1 name">
+      <input id="playerName2" placeholder="Player 2 name">
+      <input id="playerName3" placeholder="Player 3 name">
+      <input id="playerName4" placeholder="Player 4 name">
+    </section>
+
+    <section class="scoreboard" id="scoreboard"></section>
+
+    <main class="board" id="board"></main>
+
+    <div id="winnerOverlay" class="winner-overlay hidden"></div>
+
+    <footer class="footer">
+      <div id="message"></div>
+    </footer>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
