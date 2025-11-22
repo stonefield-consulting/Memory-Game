@@ -2,7 +2,7 @@
 // Seek-A-Boo — Stanfield Edition (JS)
 // =======================================
 
-// ---- Card definitions ----
+// ---- Card definitions (IDs + colors) ----
 const ALL_CARDS = [
   // Blue
   { id: 'banana',        label: 'Banana',          color: 'blue' },
@@ -53,7 +53,47 @@ const ALL_CARDS = [
   { id: 'goldfish',      label: 'Goldfish',        color: 'red' }
 ];
 
-// ---- Utility: Fisher–Yates shuffle ----
+// ---- Themes (for different image sets / difficulty) ----
+// imageDir defines where the PNGs come from.
+// useColors controls whether card fronts & seek card use color.
+// enforceColorRestriction controls whether clicking wrong-color is ignored.
+const THEMES = {
+  classic: {
+    key: "classic",
+    name: "Kids - Classic",
+    imageDir: "images",
+    useColors: true,
+    enforceColorRestriction: true
+  },
+  thanksgiving: {
+    key: "thanksgiving",
+    name: "Kids - Thanksgiving",
+    imageDir: "images/thanksgiving",
+    useColors: true,
+    enforceColorRestriction: true
+  },
+  christmas: {
+    key: "christmas",
+    name: "Kids - Christmas",
+    imageDir: "images/christmas",
+    useColors: true,
+    enforceColorRestriction: true
+  },
+  adult: {
+    key: "adult",
+    name: "Adult - No Colors",
+    imageDir: "images",
+    useColors: false,
+    enforceColorRestriction: false
+  }
+};
+
+let currentThemeKey = "classic";
+function getCurrentTheme() {
+  return THEMES[currentThemeKey] || THEMES.classic;
+}
+
+// ---- Utility: shuffle ----
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -68,8 +108,8 @@ function prettyColor(c) {
 }
 
 // ---- Game state ----
-let boardCards = [];          // randomized layout of 36 cards
-let deck = [];                // randomized list of card ids for Find Card
+let boardCards = [];
+let deck = [];
 let players = [];
 let currentPlayerIndex = 0;
 let isBusy = false;
@@ -86,6 +126,10 @@ const currentPlayerDisplayEl = document.getElementById("currentPlayerDisplay");
 const seekCardDisplayEl   = document.getElementById("seekCardDisplay");
 const messageEl           = document.getElementById("message");
 const winnerOverlayEl     = document.getElementById("winnerOverlay");
+const winnerTextEl        = document.getElementById("winnerText");
+const playAgainBtn        = document.getElementById("playAgainBtn");
+const modeSelectEl        = document.getElementById("modeSelect");
+
 const playerNameInputs    = [
   document.getElementById("playerName1"),
   document.getElementById("playerName2"),
@@ -110,6 +154,7 @@ function updateNameInputsVisibility() {
 // ---- Start / restart game ----
 function startGame() {
   const numPlayers = parseInt(playerCountEl.value, 10) || 1;
+  const theme = getCurrentTheme();
 
   if (!players.length) {
     // First time: build players from inputs
@@ -130,17 +175,17 @@ function startGame() {
   isBusy = false;
   messageEl.textContent = "";
   winnerOverlayEl.classList.add("hidden");
-  winnerOverlayEl.textContent = "";
+  winnerTextEl.textContent = "";
 
-  // A: Randomize both board layout and deck
-  boardCards = shuffle(ALL_CARDS);               // board placement
-  deck       = shuffle(ALL_CARDS.map(c => c.id)); // Find Card order
+  // Randomize board layout and deck
+  boardCards = shuffle(ALL_CARDS);
+  deck       = shuffle(ALL_CARDS.map(c => c.id));
 
   renderScoreboard();
   renderCurrentPlayer();
-  renderSeekCard();
-  renderBoard();
-  runShuffleAnimation(); // D: cosmetic shuffle
+  renderSeekCard(theme);
+  renderBoard(theme);
+  runShuffleAnimation();
 
   // Hide setup after first start, show restart
   setupControlsEl.classList.add("hidden");
@@ -170,8 +215,8 @@ function renderCurrentPlayer() {
 }
 
 // ---- Find Card / Seek card ----
-function renderSeekCard() {
-  // Clear color classes
+function renderSeekCard(theme = getCurrentTheme()) {
+  // Reset classes
   seekCardDisplayEl.className = "seek-display";
 
   if (!deck.length) {
@@ -183,25 +228,24 @@ function renderSeekCard() {
   const card = ALL_CARDS.find(c => c.id === targetId);
   if (!card) return;
 
-  // Apply color background
-  seekCardDisplayEl.classList.add(`seek-${card.color}`);
+  // Apply background color, unless Adult/no-colors mode
+  if (theme.useColors) {
+    seekCardDisplayEl.classList.add(`seek-${card.color}`);
+  } else {
+    seekCardDisplayEl.classList.add("seek-neutral");
+  }
 
-  // Show only the image (physical Seek-A-Boo style)
   seekCardDisplayEl.innerHTML = "";
   const img = new Image();
-  img.src = `images/${card.id}.png`;
+  img.src = `${theme.imageDir}/${card.id}.png`;
   img.className = "seek-img";
   seekCardDisplayEl.appendChild(img);
 }
 
-// --------------------------------------
-// C. Render Board — fully randomized
-// --------------------------------------
-function renderBoard() {
+// ---- Render Board ----
+function renderBoard(theme = getCurrentTheme()) {
   boardEl.innerHTML = "";
 
-  // boardCards is already shuffled in startGame, but we shuffle again
-  // to ensure a fresh layout even on subsequent restarts if needed.
   const layout = shuffle(boardCards);
 
   layout.forEach(card => {
@@ -213,16 +257,19 @@ function renderBoard() {
     const inner = document.createElement("div");
     inner.className = "card-inner";
 
-    // FRONT: full-color circle
     const front = document.createElement("div");
-    front.className = `card-face card-front color-${card.color}`;
+    front.className = "card-face card-front";
+    if (theme.useColors) {
+      front.classList.add(`color-${card.color}`);
+    } else {
+      front.classList.add("neutral-front");
+    }
 
-    // BACK: white circle showing the image
     const back = document.createElement("div");
     back.className = "card-face card-back";
 
     const img = new Image();
-    img.src = `images/${card.id}.png`;
+    img.src = `${theme.imageDir}/${card.id}.png`;
     img.className = "back-img";
     back.appendChild(img);
 
@@ -236,9 +283,7 @@ function renderBoard() {
   });
 }
 
-// --------------------------------------
-// D. Startup shuffle (jitter animation)
-// --------------------------------------
+// ---- Startup shuffle animation ----
 function runShuffleAnimation() {
   const cards = Array.from(boardEl.querySelectorAll(".card"));
   if (!cards.length) return;
@@ -255,30 +300,28 @@ function runShuffleAnimation() {
 function onCardClicked(cardEl) {
   if (isBusy || gameOver) return;
   if (!deck.length) return;
-  if (cardEl.classList.contains("matched")) return; // no action
+  if (cardEl.classList.contains("matched")) return;
 
+  const theme = getCurrentTheme();
   const cardId   = cardEl.dataset.cardId;
   const cardColor = cardEl.dataset.color;
   const activeId = deck[0];
   const activeCard = ALL_CARDS.find(c => c.id === activeId);
-
   if (!activeCard) return;
 
-  // Color restriction: ignore wrong color completely
-  if (cardColor !== activeCard.color) {
+  // Color restriction only in kids modes
+  if (theme.enforceColorRestriction && cardColor !== activeCard.color) {
     messageEl.textContent =
       `Choose a ${prettyColor(activeCard.color)} circle.`;
     return;
   }
 
-  // Lock input and flip the card
   isBusy = true;
   cardEl.classList.add("flipped");
 
   if (cardId === activeId) {
     // Correct match
     setTimeout(() => {
-      // Mark matched visually (hole)
       cardEl.classList.add("matched");
 
       // Remove from deck
@@ -292,24 +335,22 @@ function onCardClicked(cardEl) {
       if (!deck.length) {
         endGame();
       } else {
-        renderSeekCard();
+        renderSeekCard(theme);
       }
 
       isBusy = false;
     }, 900);
   } else {
-    // Incorrect match (same color, wrong picture)
+    // Incorrect match
     setTimeout(() => {
       cardEl.classList.remove("flipped");
 
-      // Move current Find Card to bottom of deck
       const first = deck.shift();
       deck.push(first);
 
-      // Next player's turn
       currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
       renderCurrentPlayer();
-      renderSeekCard();
+      renderSeekCard(theme);
 
       messageEl.textContent = "Not a match. Next player.";
       isBusy = false;
@@ -333,18 +374,31 @@ function endGame() {
   }
 
   messageEl.textContent = text;
-  winnerOverlayEl.textContent = text;
+  winnerTextEl.textContent = text;
   winnerOverlayEl.classList.remove("hidden");
 
-  // Neutralize seek card
   seekCardDisplayEl.className = "seek-display";
   seekCardDisplayEl.textContent = "All matches found!";
 }
 
 // ---- Event listeners ----
 playerCountEl.addEventListener("change", updateNameInputsVisibility);
+
+if (modeSelectEl) {
+  modeSelectEl.addEventListener("change", (e) => {
+    currentThemeKey = e.target.value || "classic";
+  });
+}
+
 startGameBtn.addEventListener("click", startGame);
 restartGameBtn.addEventListener("click", startGame);
+
+if (playAgainBtn) {
+  playAgainBtn.addEventListener("click", () => {
+    if (isBusy) return;
+    startGame();
+  });
+}
 
 // Init
 updateNameInputsVisibility();
