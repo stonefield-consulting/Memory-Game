@@ -1,7 +1,7 @@
 // service-worker.js
 // Offline-ready, cache-first service worker for Seek-A-Boo (Stanfield Edition)
 
-const CACHE_NAME = "seekaboo-cache-v1";
+const CACHE_NAME = "seekaboo-cache-v2";
 
 // Core assets that must be available for the game to run offline
 const CORE_ASSETS = [
