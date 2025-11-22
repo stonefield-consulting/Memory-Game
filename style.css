@@ -67,6 +67,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .status {
@@ -77,7 +78,6 @@ body {
 }
 
 /* Find Card box ~3x3" square */
-
 .seek-display {
   width: 250px;
   height: 250px;
@@ -104,6 +104,12 @@ body {
 .seek-yellow { background: #f1c40f; }
 .seek-green  { background: #2ecc71; }
 .seek-red    { background: #e74c3c; }
+
+/* Neutral background for Adult mode */
+.seek-neutral {
+  background: #ffffff;
+  border: 3px solid #555;
+}
 
 /* ============================
    PLAYER NAME INPUTS
@@ -205,13 +211,18 @@ body {
   justify-content: center;
 }
 
-/* Front faces: full-color discs */
+/* Front faces: full-color discs for kids modes */
 .card-front.color-blue   { background: #1e90ff; }
 .card-front.color-orange { background: #ff8c00; }
 .card-front.color-purple { background: #9b59b6; }
 .card-front.color-yellow { background: #f1c40f; }
 .card-front.color-green  { background: #2ecc71; }
 .card-front.color-red    { background: #e74c3c; }
+
+/* Neutral front for Adult mode (no colors) */
+.card-front.neutral-front {
+  background: #dedede;
+}
 
 /* Backs: white with image that fills most of the circle */
 .card-back {
@@ -269,19 +280,38 @@ body {
   text-align: center;
 }
 
+/* Full-screen overlay with centered dialog */
 .winner-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
-  font-size: 56px;
-  font-weight: 900;
-  color: #ffffff;
-  text-shadow: 0 0 10px rgba(0,0,0,0.7);
-  text-align: center;
-  padding: 20px;
-  box-sizing: border-box;
   background: rgba(0,0,0,0.6);
+  z-index: 1000;
+}
+
+.winner-dialog {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px 32px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.winner-text {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+#winnerOverlay button#playAgainBtn {
+  font-size: 20px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  background: #1e90ff;
+  color: #ffffff;
+  font-weight: 700;
 }
