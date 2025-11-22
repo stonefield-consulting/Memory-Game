@@ -118,6 +118,7 @@ const scoreboardEl        = document.getElementById("scoreboard");
 const playerCountEl       = document.getElementById("playerCount");
 const startGameBtn        = document.getElementById("startGameBtn");
 const restartGameBtn      = document.getElementById("restartGameBtn");
+const quitGameBtn         = document.getElementById("quitGameBtn");
 const setupControlsEl     = document.getElementById("setupControls");
 const currentPlayerDisplayEl = document.getElementById("currentPlayerDisplay");
 const seekCardDisplayEl   = document.getElementById("seekCardDisplay");
@@ -149,20 +150,47 @@ function updateNameInputsVisibility() {
   });
 }
 
+// ---- Hard reset back to setup ----
+function resetToSetup() {
+  deck = [];
+  boardCards = [];
+  players = [];
+  currentPlayerIndex = 0;
+  isBusy = false;
+  gameOver = false;
+
+  boardEl.innerHTML = "";
+  scoreboardEl.innerHTML = "";
+  seekCardDisplayEl.className = "seek-display";
+  seekCardDisplayEl.textContent = "";
+  currentPlayerDisplayEl.textContent = "";
+  messageEl.textContent = "";
+  winnerOverlayEl.classList.add("hidden");
+  winnerTextEl.textContent = "";
+
+  setupControlsEl.classList.remove("hidden");
+  if (playerNamesSection) playerNamesSection.classList.remove("hidden");
+  restartGameBtn.classList.add("hidden");
+  if (quitGameBtn) quitGameBtn.classList.add("hidden");
+
+  // Re-enable name input visibility based on current player count
+  updateNameInputsVisibility();
+}
+
 // ---- Start / restart game ----
 function startGame() {
   const numPlayers = parseInt(playerCountEl.value, 10) || 1;
   const theme = getCurrentTheme();
 
   if (!players.length) {
-    // First time: build players from inputs
+    // First time or after Quit: build players from inputs
     players = [];
     for (let i = 0; i < numPlayers; i++) {
       const nm = (playerNameInputs[i].value || "").trim() || `Player ${i + 1}`;
       players.push({ name: nm, score: 0 });
     }
   } else {
-    // Restart: keep names, reset scores
+    // Restart / Play Again: keep names, reset scores
     players.forEach(p => p.score = 0);
   }
 
@@ -185,10 +213,11 @@ function startGame() {
   renderBoard(theme);
   runShuffleAnimation();
 
-  // Hide setup after first start, show restart
+  // Hide setup after game start; show Restart + Quit
   setupControlsEl.classList.add("hidden");
   if (playerNamesSection) playerNamesSection.classList.add("hidden");
   restartGameBtn.classList.remove("hidden");
+  if (quitGameBtn) quitGameBtn.classList.remove("hidden");
 }
 
 // ---- Scoreboard ----
@@ -391,6 +420,13 @@ if (modeSelectEl) {
 startGameBtn.addEventListener("click", startGame);
 restartGameBtn.addEventListener("click", startGame);
 
+if (quitGameBtn) {
+  quitGameBtn.addEventListener("click", () => {
+    if (isBusy) return;
+    resetToSetup();
+  });
+}
+
 if (playAgainBtn) {
   playAgainBtn.addEventListener("click", () => {
     if (isBusy) return;
@@ -398,11 +434,11 @@ if (playAgainBtn) {
   });
 }
 
-// NEW: tap banner to restart game mid-play
+// Banner tap = Quit / full reset
 if (bannerEl) {
   bannerEl.addEventListener("click", () => {
     if (isBusy) return;
-    startGame();
+    resetToSetup();
   });
 }
 
