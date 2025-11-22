@@ -14,10 +14,25 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Memory Game">
-  <!-- Make sure this file exists: icons/icon-192.png -->
+
+  <!-- App icon (Home Screen icon) -->
   <link rel="apple-touch-icon" href="icons/icon-192.png">
 
-  <!-- Theme color for browser / status bar -->
+  <!-- OPTIONAL: splash screens, only used if these files exist -->
+  <link rel="apple-touch-startup-image"
+        href="icons/splash-2048x2732.png"
+        media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image"
+        href="icons/splash-2732x2048.png"
+        media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+  <link rel="apple-touch-startup-image"
+        href="icons/splash-1620x2160.png"
+        media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image"
+        href="icons/splash-2160x1620.png"
+        media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
+
+  <!-- Theme color -->
   <meta name="theme-color" content="#1e90ff">
 
   <link rel="stylesheet" href="style.css">
@@ -38,6 +53,16 @@
             <option value="3">3</option>
             <option value="4">4</option>
           </select>
+
+          <!-- NEW: Mode selector -->
+          <label for="modeSelect">Mode:</label>
+          <select id="modeSelect">
+            <option value="classic" selected>Kids - Classic</option>
+            <option value="thanksgiving">Kids - Thanksgiving</option>
+            <option value="christmas">Kids - Christmas</option>
+            <option value="adult">Adult - No Colors</option>
+          </select>
+
           <button id="startGameBtn">Start Game</button>
           <button id="restartGameBtn" class="hidden">Restart</button>
         </div>
@@ -60,7 +85,13 @@
 
     <main class="board" id="board"></main>
 
-    <div id="winnerOverlay" class="winner-overlay hidden"></div>
+    <!-- UPDATED: winner overlay now contains a dialog + button -->
+    <div id="winnerOverlay" class="winner-overlay hidden">
+      <div class="winner-dialog">
+        <div id="winnerText" class="winner-text"></div>
+        <button id="playAgainBtn">Play Again</button>
+      </div>
+    </div>
 
     <footer class="footer">
       <div id="message"></div>
@@ -73,7 +104,6 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
         navigator.serviceWorker.register("service-worker.js").catch(function (err) {
-          // Fail silently in production; log if debugging
           console.log("Service worker registration failed:", err);
         });
       });
