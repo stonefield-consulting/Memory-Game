@@ -54,9 +54,6 @@ const ALL_CARDS = [
 ];
 
 // ---- Themes (for different image sets / difficulty) ----
-// imageDir defines where the PNGs come from.
-// useColors controls whether card fronts & seek card use color.
-// enforceColorRestriction controls whether clicking wrong-color is ignored.
 const THEMES = {
   classic: {
     key: "classic",
@@ -129,6 +126,7 @@ const winnerOverlayEl     = document.getElementById("winnerOverlay");
 const winnerTextEl        = document.getElementById("winnerText");
 const playAgainBtn        = document.getElementById("playAgainBtn");
 const modeSelectEl        = document.getElementById("modeSelect");
+const bannerEl            = document.querySelector(".banner");
 
 const playerNameInputs    = [
   document.getElementById("playerName1"),
@@ -395,6 +393,14 @@ restartGameBtn.addEventListener("click", startGame);
 
 if (playAgainBtn) {
   playAgainBtn.addEventListener("click", () => {
+    if (isBusy) return;
+    startGame();
+  });
+}
+
+// NEW: tap banner to restart game mid-play
+if (bannerEl) {
+  bannerEl.addEventListener("click", () => {
     if (isBusy) return;
     startGame();
   });
