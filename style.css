@@ -29,27 +29,17 @@ body {
    ============================ */
 
 .banner {
-  width: 100%;
-  padding: 10px 16px;
-  border-radius: 12px;
-  margin-bottom: 10px;
-  background: linear-gradient(90deg,
-    #e74c3c,
-    #ff8c00,
-    #f1c40f,
-    #2ecc71,
-    #1e90ff,
-    #9b59b6
-  );
-  color: #ffffff;
-  text-align: center;
+    width: 100%;
+    height: 120px;       /* Adjust based on your image’s proportions */
+    background-image: url("images/banner.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.banner h1 {
+    display: none; /* You won’t need the text anymore */
 }
 
-.banner h1 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-}
 
 /* ============================
    TOP BAR / SEEK CARD
