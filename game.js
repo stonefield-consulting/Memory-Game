@@ -226,7 +226,17 @@ function renderScoreboard() {
   players.forEach((p, idx) => {
     const div = document.createElement("div");
     div.className = "score" + (idx === currentPlayerIndex ? " current" : "");
-    div.textContent = `${p.name} — ${p.score}`;
+
+    const nameEl = document.createElement("div");
+    nameEl.className = "score-name";
+    nameEl.textContent = p.name;
+
+    const valueEl = document.createElement("div");
+    valueEl.className = "score-value";
+    valueEl.textContent = p.score;
+
+    div.appendChild(nameEl);
+    div.appendChild(valueEl);
     scoreboardEl.appendChild(div);
   });
 }
