@@ -22,6 +22,8 @@ body {
   padding: 16px;
   box-sizing: border-box;
   position: relative;
+  margin-left: auto;   /* center on wide screens */
+  margin-right: auto;
 }
 
 /* ============================
@@ -29,17 +31,23 @@ body {
    ============================ */
 
 .banner {
-    width: 100%;
-    height: 240px;       /* Adjust based on your image’s proportions */
-    background-image: url("images/banner.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-.banner h1 {
-    display: none; /* You won’t need the text anymore */
+  width: 100%;
+  height: 180px; /* tuned for your 2048x400 banner */
+  background-image: url("images/banner.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 16px;
+  overflow: hidden; /* clip to rounded corners */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  margin-bottom: 20px;
 }
 
+/* Text hidden since the graphic already includes the title.
+   Remove this block if you ever want text over the banner. */
+.banner h1 {
+  display: none;
+}
 
 /* ============================
    TOP BAR / SEEK CARD
@@ -277,7 +285,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   z-index: 1000;
 }
 
@@ -287,7 +295,7 @@ body {
   padding: 24px 32px;
   max-width: 90%;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .winner-text {
