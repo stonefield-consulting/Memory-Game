@@ -44,30 +44,38 @@
     </div>
 
     <header class="top-bar">
-      <div class="controls">
-        <div id="setupControls">
-          <label for="playerCount">Players:</label>
-          <select id="playerCount">
-            <option value="1">1</option>
-            <option value="2" selected>2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-          </select>
+      <!-- LEFT SIDE: controls + scoreboard -->
+      <div class="top-left">
+        <div class="controls">
+          <div id="setupControls">
+            <label for="playerCount">Players:</label>
+            <select id="playerCount">
+              <option value="1">1</option>
+              <option value="2" selected>2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
 
-          <!-- NEW: Mode selector -->
-          <label for="modeSelect">Mode:</label>
-          <select id="modeSelect">
-            <option value="classic" selected>Kids - Classic</option>
-            <option value="thanksgiving">Kids - Thanksgiving</option>
-            <option value="christmas">Kids - Christmas</option>
-            <option value="adult">Adult - No Colors</option>
-          </select>
+            <!-- Mode selector -->
+            <label for="modeSelect">Mode:</label>
+            <select id="modeSelect">
+              <option value="classic" selected>Kids - Classic</option>
+              <option value="thanksgiving">Kids - Thanksgiving</option>
+              <option value="christmas">Kids - Christmas</option>
+              <option value="adult">Adult - No Colors</option>
+            </select>
 
-          <button id="startGameBtn">Start Game</button>
-          <button id="restartGameBtn" class="hidden">Restart</button>
+            <button id="startGameBtn">Start Game</button>
+            <button id="restartGameBtn" class="hidden">Restart</button>
+            <button id="quitGameBtn" class="hidden">Quit</button>
+          </div>
         </div>
+
+        <!-- Scoreboard now lives under the controls in the same band -->
+        <section class="scoreboard" id="scoreboard"></section>
       </div>
 
+      <!-- RIGHT SIDE: turn label + find card -->
       <div class="status">
         <div id="currentPlayerDisplay"></div>
         <div id="seekCardDisplay" class="seek-display"></div>
@@ -81,11 +89,9 @@
       <input id="playerName4" type="text" placeholder="Player 4 name" class="hidden">
     </section>
 
-    <section class="scoreboard" id="scoreboard"></section>
-
     <main class="board" id="board"></main>
 
-    <!-- UPDATED: winner overlay now contains a dialog + button -->
+    <!-- Winner overlay with dialog and Play Again button -->
     <div id="winnerOverlay" class="winner-overlay hidden">
       <div class="winner-dialog">
         <div id="winnerText" class="winner-text"></div>
